@@ -1,35 +1,61 @@
-﻿Use master
-Go
-IF EXISTS (SELECT * FROM sys.databases WHERE name = N'ShiftItUpDB')
-BEGIN
-    DROP DATABASE ShiftItUpDB;
-END
-Go
 Create Database ShiftItUpDB
+
 Go
+
 Use ShiftItUpDB
+
 Go
-Create Table AppUsers
+
+Create Table Store
 (
-	Id int Primary Key Identity,
-	UserName nvarchar(50) Not Null,
-	UserLastName nvarchar(50) Not Null,
-	UserEmail nvarchar(50) Unique Not Null,
-	UserPassword nvarchar(50) Not Null,
-	IsManager bit Not Null Default 0
-)
-Insert Into AppUsers Values('admin', 'admin', 'kuku@kuku.com', '1234', 1)
-Go
--- Create a login for the admin user
-CREATE LOGIN [ShiftItUpAdminLogin] WITH PASSWORD = 'thePassword';
-Go
+IdStore int Primary Key,
+StoreName nvarchar(50) Not Null,
+StoreAdress nvarchar(50) Not Null,
+StoreManager nvarchar(50) Not Null,
+ManagerEmail nvarchar(50)  Unique Not Null
+);
+Create Table [Status]
+(
+Id int Primary Key Identity,
+[Name] nvarchar(50) Not Null,
+);
 
--- Create a user in the YourProjectNameDB database for the login
-CREATE USER [ShiftItUpAdminUser] FOR LOGIN [ShiftItUpAdminLogin];
-Go
+Create Table Worker
+(
+WorkerId int Primary Key Identity,
+UserName nvarchar(50) Not Null,
+UserLastName nvarchar(50) Not Null,
+UserEmail nvarchar(50) Unique Not Null,
+UserPassword nvarchar(50) Not Null,
+UserStoreName nvarchar(50) Not Null,
+IdStoreManager nvarchar(50) Not Null,
+UserSalary nvarchar(50) Not Null,
+StatusWorker nvarchar(50) Not Null,
+Foreign key (IdStoreManager ) References Store (IdStore) ,
+Foreign key (StatusWorker ) References [Status] (Id) 
+);
 
--- Add the user to the db_owner role to grant admin privileges
-ALTER ROLE db_owner ADD MEMBER [ShiftItUpAdminUser];
-Go
+Create Table [Shift]
+(
+ShiftID int Primary Key Identity,
+ShiftDate date Not Null,
+ShiftGoal nvarchar(50) Not Null,
+);
 
---scaffold-DbContext "Server = (localdb)\MSSQLLocalDB;Initial Catalog=ShiftItUpDB;User ID=ShiftItUpAdminLogin;Password=thePassword;" Microsoft.EntityFrameworkCore.SqlServer -OutPutDir Models -Context ShiftItUpDbContext -DataAnnotations –force
+Create Table [WorkerInShift]
+(
+ShiftID nvarchar(50) Not Null,
+WorkerId nvarchar(50) Not Null,
+Foreign key (ShiftID ) References [Shift] (ShiftID),
+Foreign key (WorkerId ) References Worker (WorkerId) 
+);
+
+Create Table [DefiningShift]
+(
+ShiftID nvarchar(50) Not Null,
+ShiftDate date Not Null,
+ShiftHour nvarchar(50) Not Null,
+);
+
+
+
