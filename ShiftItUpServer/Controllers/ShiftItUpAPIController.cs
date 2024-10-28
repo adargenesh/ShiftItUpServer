@@ -24,4 +24,47 @@ public class ShiftItUpAPIController : ControllerBase
         return Ok("Server Responded Successfully");
     }
 
+
+
+
+
+
+
+
+
+
+
+
+    [HttpPost("login")]
+    public IActionResult Login([FromBody] ShiftItUpServer.DTO.LoginDto loginDto)
+    {
+        try
+        {
+            HttpContext.Session.Clear(); //Logout any previous login attempt
+
+            //Get model user class from DB with matching email. 
+            ShiftItUpServer.Models.Worker? modelsUser = context.GetUser(loginDto.UserEmail);
+
+            //Check if user exist for this email and if password match, if not return Access Denied (Error 403) 
+            if (modelsUser == null || modelsUser.UserPassword != loginDto.UserPassword)
+            {
+                return Unauthorized();
+            }
+
+            //Login suceed! now mark login in session memory!
+            HttpContext.Session.SetString("loggedInUser", modelsUser.UserEmail);
+
+            ShiftItUpServer.DTO.WorkerDto dtoUser = new ShiftItUpServer.DTO.WorkerDto(modelsUser);
+            //dtoUser.ProfileImagePath = GetProfileImageVirtualPath(dtoUser.Id);
+            return Ok(dtoUser);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+    }
+
+
 }
+

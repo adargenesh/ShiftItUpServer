@@ -7,6 +7,12 @@ namespace ShiftItUpServer.Models;
 public partial class ShiftItUpDbContext : DbContext
 {
 
-
+    public Worker? GetUser(string email)
+    {
+        return this.Workers.Where(u => u.UserEmail == email)
+                            .Include(u => u.UserPassword)
+                           
+                            .FirstOrDefault();
+    }
 }
 
