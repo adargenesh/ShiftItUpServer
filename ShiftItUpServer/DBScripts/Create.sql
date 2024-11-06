@@ -75,6 +75,8 @@ INSERT INTO [Status] VALUES (1, N'נדחה')
 INSERT INTO [Status] VALUES (2, N'ממתין')
 Go
 
+
+
 -- Create a login for the admin user
 CREATE LOGIN [ShiftAdminLogin] WITH PASSWORD = 'kukuPassword';
 Go
@@ -91,3 +93,4 @@ Go
 /*
 scaffold-DbContext "Server = (localdb)\MSSQLLocalDB;Initial Catalog=ShiftItUpDB;User ID=ShiftAdminLogin;Password=kukuPassword;" Microsoft.EntityFrameworkCore.SqlServer -OutPutDir Models -Context ShiftItUpDbContext -DataAnnotations -force
 */
+

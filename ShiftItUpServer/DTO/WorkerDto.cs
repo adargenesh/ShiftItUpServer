@@ -18,6 +18,7 @@
             public int StatusWorker { get; set; }
         public int IdStore { get; set; } 
         public string UserPassword { get; set; } = null;
+        public string ProfileImagePath { get; set; } = "";
 
 
         public WorkerDto(Models.Worker modelWorker)
