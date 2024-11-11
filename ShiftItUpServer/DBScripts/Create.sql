@@ -77,6 +77,10 @@ Go
 
 
 
+
+insert into Worker values ('adar','genesh', 'adar.g@gmail.com', 'adar123', 'billa', '50','0')
+insert into Store values ('adar','genesh', 'adar.g@gmail.com', 'adar123', 'billa', '50','0')
+
 -- Create a login for the admin user
 CREATE LOGIN [ShiftAdminLogin] WITH PASSWORD = 'kukuPassword';
 Go
@@ -94,3 +98,5 @@ Go
 scaffold-DbContext "Server = (localdb)\MSSQLLocalDB;Initial Catalog=ShiftItUpDB;User ID=ShiftAdminLogin;Password=kukuPassword;" Microsoft.EntityFrameworkCore.SqlServer -OutPutDir Models -Context ShiftItUpDbContext -DataAnnotations -force
 */
 
+SELECT * FROM [Worker]
+GO

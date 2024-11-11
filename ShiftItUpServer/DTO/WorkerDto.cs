@@ -2,6 +2,13 @@
 {
     public class WorkerDto
     {
+
+
+
+        public WorkerDto()
+        {
+
+        }
         
             public int WorkerId { get; set; }
 
