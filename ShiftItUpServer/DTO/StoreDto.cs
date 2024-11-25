@@ -11,7 +11,7 @@
 
             public string StoreManager { get; set; } = null;
 
-        public string? ManagerEmail { get; set; } = null; 
+        public string ManagerEmail { get; set; } = null; 
           
         public StoreDto(Models.Store modelStore)
         {
