@@ -11,8 +11,8 @@
 
             public string StoreManager { get; set; } = null;
 
-        public string ManagerEmail { get; set; } = null; 
-          
+        public string ManagerEmail { get; set; } = null;
+        public string ProfileImagePath { get; set; } = "";
         public StoreDto(Models.Store modelStore)
         {
             this.IdStore = modelStore.IdStore;

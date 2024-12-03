@@ -24,8 +24,8 @@ public class ShiftItUpAPIController : ControllerBase
         return Ok("Server Responded Successfully");
     }
 
-    [HttpPost("login")]
-    public IActionResult Login([FromBody] ShiftItUpServer.DTO.LoginDto loginDto)
+    [HttpPost("loginWorker")]
+    public IActionResult LoginWorker([FromBody] ShiftItUpServer.DTO.LoginDto loginDto)
     {
         try
         {
@@ -44,8 +44,37 @@ public class ShiftItUpAPIController : ControllerBase
             HttpContext.Session.SetString("loggedInUser", modelsUser.UserEmail);
 
             ShiftItUpServer.DTO.WorkerDto dtoUser = new ShiftItUpServer.DTO.WorkerDto(modelsUser);
-            //dtoUser.ProfileImagePath = GetProfileImageVirtualPath(dtoUser.Id);
+            dtoUser.ProfileImagePath = GetProfileImageVirtualPath(dtoUser.WorkerId, false);
             return Ok(dtoUser);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost("loginStore")]
+    public IActionResult LoginStore([FromBody] ShiftItUpServer.DTO.LoginDto loginDto)
+    {
+        try
+        {
+            HttpContext.Session.Clear(); //Logout any previous login attempt
+
+            //Get model store class from DB with matching email. 
+            ShiftItUpServer.Models.Store? modelsStore = context.GetStore(loginDto.UserEmail);
+
+            //Check if store exist for this email and if password match, if not return Access Denied (Error 403) 
+            if (modelsStore == null || modelsStore.ManagerPassword != loginDto.UserPassword)
+            {
+                return Unauthorized();
+            }
+
+            //Login suceed! now mark login in session memory!
+            HttpContext.Session.SetString("loggedInStore", modelsStore.ManagerEmail);
+
+            ShiftItUpServer.DTO.StoreDto dtoStore = new ShiftItUpServer.DTO.StoreDto(modelsStore);
+            dtoStore.ProfileImagePath = GetProfileImageVirtualPath(dtoStore.IdStore, true);
+            return Ok(dtoStore);
         }
         catch (Exception ex)
         {
@@ -54,8 +83,8 @@ public class ShiftItUpAPIController : ControllerBase
 
     }
 
-    [HttpPost("register")]
-    public IActionResult Register([FromBody] ShiftItUpServer.DTO.WorkerDto userDto)
+    [HttpPost("registerWorker")]
+    public IActionResult RegisterWorker([FromBody] ShiftItUpServer.DTO.WorkerDto userDto)
     {
         try
         {
@@ -69,7 +98,7 @@ public class ShiftItUpAPIController : ControllerBase
 
             //User was added!
             ShiftItUpServer.DTO.WorkerDto dtoUser = new ShiftItUpServer.DTO.WorkerDto(modelsUser);
-            dtoUser.ProfileImagePath = GetProfileImageVirtualPath(dtoUser.WorkerId);
+            dtoUser.ProfileImagePath = GetProfileImageVirtualPath(dtoUser.WorkerId, false);
             return Ok(dtoUser);
         }
         catch (Exception ex)
@@ -79,29 +108,89 @@ public class ShiftItUpAPIController : ControllerBase
 
     }
 
+    [HttpPost("registerStore")]
+    public IActionResult RegisterStore([FromBody] ShiftItUpServer.DTO.StoreDto storeDto)
+    {
+        try
+        {
+            HttpContext.Session.Clear(); //Logout any previous login attempt
 
+            //Create model store class
+            ShiftItUpServer.Models.Store modelsStore = storeDto.GetModel();
 
+            context.Stores.Add(modelsStore);
+            context.SaveChanges();
+
+            //store was added!
+            ShiftItUpServer.DTO.StoreDto dtoStore = new ShiftItUpServer.DTO.StoreDto(modelsStore);
+            dtoStore.ProfileImagePath = GetProfileImageVirtualPath(dtoStore.IdStore, true);
+            return Ok(dtoStore);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+    }
+
+    private string? GetLoggedInEmail()
+    {
+        string? email = HttpContext.Session.GetString("loggedInUser");
+        if (string.IsNullOrEmpty(email))
+        {
+            email = HttpContext.Session.GetString("loggedInStore");
+        }
+        return email;
+
+    }
+
+    private bool IsStore()
+    {
+        string? email = HttpContext.Session.GetString("loggedInUser");
+        if (string.IsNullOrEmpty(email))
+        {
+            return true;
+        }
+        return false;
+
+    }
 
     [HttpPost("UploadProfileImage")]
     public async Task<IActionResult> UploadProfileImageAsync(IFormFile file)
     {
         //Check if who is logged in
-        string? userEmail = HttpContext.Session.GetString("loggedInUser");
-        if (string.IsNullOrEmpty(userEmail))
+        string? email = GetLoggedInEmail();
+
+        if (string.IsNullOrEmpty(email))
         {
             return Unauthorized("User is not logged in");
         }
 
-        //Get model user class from DB with matching email. 
-        ShiftItUpServer.Models.Worker? user = context.GetUser(userEmail);
-        //Clear the tracking of all objects to avoid double tracking
-        context.ChangeTracker.Clear();
+        bool isStore = IsStore();
 
-        if (user == null)
+        string path = "";
+
+        Object loggedInObject = null;
+        if (isStore)
         {
-            return Unauthorized("User is not found in the database");
+            //Get model user class from DB with matching email. 
+            ShiftItUpServer.Models.Store? s = context.GetStore(email);
+            loggedInObject = s;
+            //Clear the tracking of all objects to avoid double tracking
+            context.ChangeTracker.Clear();
+            path = $"\\storeImages\\{s.IdStore}";
+        }
+        else
+        {
+            //Get model user class from DB with matching email. 
+            ShiftItUpServer.Models.Worker? w = context.GetUser(email);
+            loggedInObject = w;
+            //Clear the tracking of all objects to avoid double tracking
+            context.ChangeTracker.Clear();
+            path = $"\\profileImages\\{w.WorkerId}";
         }
 
+        
 
         //Read all files sent
         long imagesSize = 0;
@@ -122,7 +211,7 @@ public class ShiftItUpAPIController : ControllerBase
             }
 
             //Build path in the web root (better to a specific folder under the web root
-            string filePath = $"{this.webHostEnvironment.WebRootPath}\\profileImages\\{user.WorkerId}{extention}";
+            string filePath = $"{this.webHostEnvironment.WebRootPath}{path}{extention}";
 
             using (var stream = System.IO.File.Create(filePath))
             {
@@ -142,9 +231,19 @@ public class ShiftItUpAPIController : ControllerBase
 
         }
 
-        ShiftItUpServer.DTO.WorkerDto dtoUser = new ShiftItUpServer.DTO.WorkerDto(user);
-        dtoUser.ProfileImagePath = GetProfileImageVirtualPath(dtoUser.WorkerId);
-        return Ok(dtoUser);
+        if (isStore)
+        {
+            ShiftItUpServer.DTO.StoreDto dtoStore = new ShiftItUpServer.DTO.StoreDto((Store)loggedInObject);
+            dtoStore.ProfileImagePath = GetProfileImageVirtualPath(dtoStore.IdStore, true);
+            return Ok(dtoStore);
+        }
+        else
+        {
+            ShiftItUpServer.DTO.WorkerDto dtoUser = new ShiftItUpServer.DTO.WorkerDto((Worker)loggedInObject);
+            dtoUser.ProfileImagePath = GetProfileImageVirtualPath(dtoUser.WorkerId, false);
+            return Ok(dtoUser);
+        }
+        
     }
 
     //Helper functions
@@ -192,24 +291,33 @@ public class ShiftItUpAPIController : ControllerBase
 
 
 
-    private string GetProfileImageVirtualPath(int userId)
+    private string GetProfileImageVirtualPath(int id, bool isStore)
     {
-        string virtualPath = $"/profileImages/{userId}";
-        string path = $"{this.webHostEnvironment.WebRootPath}\\profileImages\\{userId}.png";
+        string localPath = $"\\profileImages\\{id}";
+        string virtualPath = $"/profileImages/{id}";
+        if ( (isStore))
+        {
+            virtualPath = $"/storeImages/{id}";
+            localPath = $"\\storeImages\\{id}";
+        }
+        string path = $"{this.webHostEnvironment.WebRootPath}{localPath}.png";
         if (System.IO.File.Exists(path))
         {
             virtualPath += ".png";
         }
         else
         {
-            path = $"{this.webHostEnvironment.WebRootPath}\\profileImages\\{userId}.jpg";
+            path = $"{this.webHostEnvironment.WebRootPath}{localPath}.jpg";
             if (System.IO.File.Exists(path))
             {
                 virtualPath += ".jpg";
             }
             else
             {
-                virtualPath = $"/profileImages/default.png";
+                if (!isStore)
+                    virtualPath = $"/profileImages/default.png";
+                else
+                    virtualPath = $"/storeImages/default.png";
             }
         }
 

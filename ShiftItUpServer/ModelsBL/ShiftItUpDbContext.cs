@@ -12,5 +12,11 @@ public partial class ShiftItUpDbContext : DbContext
         return this.Workers.Where(u => u.UserEmail == email)
                             .FirstOrDefault();
     }
+
+    public Store? GetStore(string email)
+    {
+        return this.Stores.Where(u => u.ManagerEmail == email)
+                            .FirstOrDefault();
+    }
 }
 
