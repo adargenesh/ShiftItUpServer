@@ -12,7 +12,9 @@
             public string StoreManager { get; set; } = null;
 
         public string ManagerEmail { get; set; } = null;
+        public string ManagerPassword { get; set; } = null;
         public string ProfileImagePath { get; set; } = "";
+        public StoreDto() { }
         public StoreDto(Models.Store modelStore)
         {
             this.IdStore = modelStore.IdStore;
@@ -20,6 +22,7 @@
             this.StoreAddress=modelStore.StoreAdress;
             this.StoreManager = modelStore.StoreManager;
             this.ManagerEmail = modelStore.ManagerEmail;
+            this.ManagerPassword = modelStore.ManagerPassword;
 
         }
         public Models.Store GetModel()
@@ -30,6 +33,7 @@
             model.StoreAdress=this.StoreAddress;
             model.StoreManager = this.StoreManager;
             model.ManagerEmail = this.ManagerEmail;
+            model.ManagerPassword = this.ManagerPassword; ;
             return model;
         }
       
