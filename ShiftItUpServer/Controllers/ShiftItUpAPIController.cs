@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using ShiftItUpServer.DTO;
 using ShiftItUpServer.Models;
 
@@ -364,7 +365,20 @@ public class ShiftItUpAPIController : ControllerBase
         }
     }
 
-
+    [HttpGet("GetAllWorkers")]
+    public IActionResult GetAllWorkers()
+    {
+        //validate later
+        try
+        {
+            List<Worker> list = context.GetAllWorkers();
+            return Ok(list);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest();
+        }
+    }
 
 
 
