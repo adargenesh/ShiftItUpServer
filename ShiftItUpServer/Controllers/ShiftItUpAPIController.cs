@@ -135,6 +135,28 @@ public class ShiftItUpAPIController : ControllerBase
 
     }
 
+    [HttpGet("getStores")]
+    public IActionResult GetStores()
+    {
+        try
+        {
+            
+            //Read stores from database
+            List<Store> stores = context.Stores.ToList();
+            List<StoreDto> dtoStores = new List<StoreDto>();
+            foreach (Store store in stores)
+            {
+                dtoStores.Add(new StoreDto(store));
+            }
+            return Ok(dtoStores);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+    }
+
     private string? GetLoggedInEmail()
     {
         string? email = HttpContext.Session.GetString("loggedInUser");
