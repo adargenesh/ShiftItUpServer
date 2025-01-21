@@ -23,7 +23,7 @@
             this.StoreManager = modelStore.StoreManager;
             this.ManagerEmail = modelStore.ManagerEmail;
             this.ManagerPassword = modelStore.ManagerPassword;
-
+           
         }
         public Models.Store GetModel()
         {
@@ -33,7 +33,8 @@
             model.StoreAdress=this.StoreAddress;
             model.StoreManager = this.StoreManager;
             model.ManagerEmail = this.ManagerEmail;
-            model.ManagerPassword = this.ManagerPassword; ;
+            model.ManagerPassword = this.ManagerPassword;
+            
             return model;
         }
       
