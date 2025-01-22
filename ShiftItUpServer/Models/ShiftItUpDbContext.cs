@@ -35,7 +35,7 @@ public partial class ShiftItUpDbContext : DbContext
     {
         modelBuilder.Entity<DefiningShift>(entity =>
         {
-            entity.HasKey(e => e.ShiftId).HasName("PK__Defining__C0A838E102B3FB92");
+            entity.HasKey(e => e.ShiftId).HasName("PK__Defining__C0A838E112188133");
 
             entity.HasOne(d => d.IdStoreNavigation).WithMany(p => p.DefiningShifts)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -44,24 +44,24 @@ public partial class ShiftItUpDbContext : DbContext
 
         modelBuilder.Entity<Shift>(entity =>
         {
-            entity.HasKey(e => e.ShiftId).HasName("PK__Shift__C0A838E1686B35E3");
+            entity.HasKey(e => e.ShiftId).HasName("PK__Shift__C0A838E1D52C9126");
         });
 
         modelBuilder.Entity<Status>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Status__3214EC07F537D61C");
+            entity.HasKey(e => e.Id).HasName("PK__Status__3214EC07EC7DAF19");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<Store>(entity =>
         {
-            entity.HasKey(e => e.IdStore).HasName("PK__Store__2A8EB278BDA9D0C2");
+            entity.HasKey(e => e.IdStore).HasName("PK__Store__2A8EB27871BE147A");
         });
 
         modelBuilder.Entity<Worker>(entity =>
         {
-            entity.HasKey(e => e.WorkerId).HasName("PK__Worker__077C88264A24C283");
+            entity.HasKey(e => e.WorkerId).HasName("PK__Worker__077C8826ACFF1474");
 
             entity.HasOne(d => d.IdStoreNavigation).WithMany(p => p.Workers)
                 .OnDelete(DeleteBehavior.ClientSetNull)

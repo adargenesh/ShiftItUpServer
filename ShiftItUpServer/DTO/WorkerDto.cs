@@ -18,8 +18,7 @@
 
             public string UserEmail { get; set; } = null;
 
-            public string UserStoreName { get; set; } = null;
-
+            
             public string  UserSalary { get; set; }  // Changed to decimal for better salary representation
 
             public int StatusWorker { get; set; }
@@ -34,7 +33,6 @@
             this.UserName = modelWorker.UserName;
             this.UserLastName = modelWorker.UserLastName;
             this.UserEmail = modelWorker.UserEmail;
-            this.UserStoreName = modelWorker.UserStoreName;           
             this.UserSalary = modelWorker.UserSalary;
             this.StatusWorker = modelWorker.StatusWorker;
             this.IdStore = modelWorker.IdStore;
@@ -47,7 +45,6 @@
             model.UserName = this.UserName;
             model.UserLastName = this.UserLastName;
             model.UserEmail = this.UserEmail;
-            model.UserStoreName = this.UserStoreName;
             model.UserSalary = this.UserSalary;
             model.StatusWorker = this.StatusWorker;
             model.IdStore = this.IdStore;

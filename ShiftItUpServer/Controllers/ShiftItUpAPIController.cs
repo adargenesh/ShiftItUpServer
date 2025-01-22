@@ -37,7 +37,7 @@ public class ShiftItUpAPIController : ControllerBase
             ShiftItUpServer.Models.Worker? modelsUser = context.GetUser(loginDto.UserEmail);
 
             //Check if user exist for this email and if password match, if not return Access Denied (Error 403) 
-            if (modelsUser == null || modelsUser.UserPassword != loginDto.UserPassword)
+            if (modelsUser == null || modelsUser.UserPassword != loginDto.UserPassword || modelsUser.StatusWorker != 0)
             {
                 return Unauthorized();
             }
@@ -371,7 +371,6 @@ public class ShiftItUpAPIController : ControllerBase
         user.UserLastName = userDto.UserLastName;
         user.UserEmail = userDto.UserEmail;
         user.UserPassword = userDto.UserPassword;
-        user.UserStoreName = userDto.UserStoreName; 
         user.UserSalary = userDto.UserSalary;   
 
         try

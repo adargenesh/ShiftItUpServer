@@ -37,7 +37,6 @@ Create Table Worker
     UserLastName nvarchar(50) Not Null,
     UserEmail nvarchar(50) Unique Not Null,
     UserPassword nvarchar(50) Not Null,
-    UserStoreName nvarchar(50) Not Null,
     IdStore int Not Null,
     UserSalary nvarchar(50) Not Null,
     StatusWorker int Not Null,
@@ -82,8 +81,8 @@ insert into Store (StoreName, StoreAdress, StoreManager, ManagerEmail, ManagerPa
 values ('Billa', 'Street 123', 'Adi', 'adi@billa.com', 'password123');
 
 -- עכשיו הוסף את הנתונים לטבלת Worker, כאשר ה-IdStore שייך לערך קיים בטבלת Store (במקרה זה 1)
-insert into Worker (UserName, UserLastName, UserEmail, UserPassword, UserStoreName, IdStore, UserSalary, StatusWorker)
-values ('Adar', 'Genesh', 'adar.g@gmail.com', 'adar123', 'Billa', 1, '5000', 0);
+insert into Worker (UserName, UserLastName, UserEmail, UserPassword, IdStore, UserSalary, StatusWorker)
+values ('Adar', 'Genesh', 'adar.g@gmail.com', 'adar123',  1, '5000', 0);
 
 -- יצירת כניסה עבור המשתמש admin
 CREATE LOGIN [ShiftAdminLogin] WITH PASSWORD = 'kukuPassword';
