@@ -104,3 +104,4 @@ scaffold-DbContext "Server = (localdb)\MSSQLLocalDB;Initial Catalog=ShiftItUpDB;
 SELECT * FROM [Worker]
 GO
 select * from Store
+select *from [Status] 

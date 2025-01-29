@@ -73,6 +73,7 @@ public class ShiftItUpAPIController : ControllerBase
 
             //Login suceed! now mark login in session memory!
             HttpContext.Session.SetString("loggedInStore", modelsStore.ManagerEmail);
+            
 
             ShiftItUpServer.DTO.StoreDto dtoStore = new ShiftItUpServer.DTO.StoreDto(modelsStore);
             dtoStore.ProfileImagePath = GetProfileImageVirtualPath(dtoStore.IdStore, true);
@@ -157,18 +158,39 @@ public class ShiftItUpAPIController : ControllerBase
 
     }
 
-    [HttpGet("getWorkers")]
-    public IActionResult GetWorkers()
+    [HttpGet("getWorkersOfStore")]
+    public IActionResult GetWorkersOfStore()
     {
         try
         {
+            //Check if user is logged in
+            string? email = GetLoggedInEmail();
+            if(string.IsNullOrEmpty(email))
+            {
+                return Unauthorized();
+            }
+
+            //Extract store id of the loged in user
+            int storeid;
+            if (IsStoreLoggedin())
+            {
+                Store? s = context.GetStore(email);
+                storeid = s.IdStore;
+            }
+            else
+            {
+                Worker? w = context.GetUser(email);
+                storeid = w.IdStore;
+            }
 
             //Read stores from database
-            List<Worker> workers = context.Workers.ToList();
+            List<Worker> workers = context.Workers.Where(w=>w.IdStore==storeid).ToList();
             List<WorkerDto> dtoWorkers = new List<WorkerDto>();
             foreach (Worker worker in workers)
             {
-                dtoWorkers.Add(new WorkerDto(worker));
+                WorkerDto w = new WorkerDto(worker);
+                w.ProfileImagePath = GetProfileImageVirtualPath(w.WorkerId, false);
+                dtoWorkers.Add(w);
             }
             return Ok(dtoWorkers);
         }
@@ -188,6 +210,13 @@ public class ShiftItUpAPIController : ControllerBase
             email = HttpContext.Session.GetString("loggedInStore");
         }
         return email;
+
+    }
+
+    private bool IsStoreLoggedin()
+    {
+        string? email = HttpContext.Session.GetString("loggedInStore");
+        return !string.IsNullOrEmpty(email);
 
     }
 
@@ -411,6 +440,21 @@ public class ShiftItUpAPIController : ControllerBase
 
     [HttpGet("GetAllWorkers")]
     public IActionResult GetAllWorkers()
+    {
+        //validate later
+        try
+        {
+            List<Worker> list = context.GetAllWorkers();
+            return Ok(list);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest();
+        }
+    }
+
+    [HttpGet("GetWorkerStatus")]
+    public IActionResult GetWorkerStatus()
     {
         //validate later
         try
