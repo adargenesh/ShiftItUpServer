@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using ShiftItUpServer.DTO;
 using ShiftItUpServer.Models;
+using ShiftItUpServer.Services;
 
 [Route("api")]
 [ApiController]
@@ -150,6 +151,28 @@ public class ShiftItUpAPIController : ControllerBase
                 dtoStores.Add(new StoreDto(store));
             }
             return Ok(dtoStores);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+    }
+
+    [HttpGet("getStatuses")]
+    public IActionResult GetStatuses()
+    {
+        try
+        {
+
+            //Read stores from database
+            List<Status> list = context.Statuses.ToList();
+            List<StatusDto> dtoStatuses = new List<StatusDto>();
+            foreach (Status s in list)
+            {
+                dtoStatuses.Add(new StatusDto(s));
+            }
+            return Ok(dtoStatuses);
         }
         catch (Exception ex)
         {
@@ -352,8 +375,63 @@ public class ShiftItUpAPIController : ControllerBase
         return false;
     }
 
+    [HttpPost("ApproveWorker")]
+    public IActionResult ApproveWorker([FromBody] ShiftItUpServer.DTO.WorkerDto userDto)
+    {
+        //First update user in database
+        IActionResult actionResult = UpdateWorker(userDto);
+        //Send email to the worker to notify him that he is approved
+        Store? s = context.Stores.Where(ss => ss.IdStore == userDto.IdStore).FirstOrDefault();
+        if (s != null)
+        {
+            SendApproveEmailToWorker(userDto.UserEmail, userDto.UserName, s.StoreName, userDto.UserSalary);
+        }
+        return actionResult;
+    }
 
+    [HttpPost("updateWorker")]
+    public IActionResult UpdateWorker([FromBody] ShiftItUpServer.DTO.WorkerDto userDto)
+    {
+        try
+        {
+            string? email = GetLoggedInEmail();
+            if (email == null)
+            {
+                return Unauthorized();
+            }
 
+            //Create model user class
+            ShiftItUpServer.Models.Worker modelsUser = userDto.GetModel();
+
+            context.Workers.Update(modelsUser);
+            context.SaveChanges();
+
+            //User was added!
+            ShiftItUpServer.DTO.WorkerDto dtoUser = new ShiftItUpServer.DTO.WorkerDto(modelsUser);
+            dtoUser.ProfileImagePath = GetProfileImageVirtualPath(dtoUser.WorkerId, false);
+            return Ok(dtoUser);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+    }
+
+    private async void SendApproveEmailToWorker(string workerEmail, string workerName, string storeName, string salary)
+    {
+        EmailData email = new EmailData()
+        {
+            From = "ShiftItUp System",
+            To = workerEmail,
+            Subject = "Welcome To ShiftItUp System!",
+            Body = $"Dear {workerName}, We are happy to inform you that you got accepted to {storeName}\nYour salary will be {salary} NIS per hour\nGoiod luck!"
+        };
+
+        SendEmailService sendEmailService = new SendEmailService();
+        await sendEmailService.Send(email);
+
+    }
 
 
 
@@ -453,21 +531,7 @@ public class ShiftItUpAPIController : ControllerBase
         }
     }
 
-    [HttpGet("GetWorkerStatus")]
-    public IActionResult GetWorkerStatus()
-    {
-        //validate later
-        try
-        {
-            List<Worker> list = context.GetAllWorkers();
-            return Ok(list);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest();
-        }
-    }
-
+    
 
 
 
