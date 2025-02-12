@@ -10,15 +10,16 @@ namespace ShiftItUpServer.Models;
 public partial class DefiningShift
 {
     [Key]
-    [Column("ShiftID")]
-    public int ShiftId { get; set; }
+    [Column("DefiningShiftID")]
+    public int DefiningShiftId { get; set; }
 
     public int IdStore { get; set; }
 
-    public DateOnly ShiftDate { get; set; }
+    public int DayOfWeek { get; set; }
 
-    [StringLength(50)]
-    public string ShiftHour { get; set; } = null!;
+    public TimeOnly StartTime { get; set; }
+
+    public TimeOnly EndTime { get; set; }
 
     [ForeignKey("IdStore")]
     [InverseProperty("DefiningShifts")]

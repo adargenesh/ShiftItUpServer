@@ -531,20 +531,50 @@ public class ShiftItUpAPIController : ControllerBase
         }
     }
 
-    
 
+    [HttpGet("getWorkersOfStoreByStatus")]
+    public IActionResult GetWorkersOfStoreByStatus([FromQuery] int statusWorker)
+    {
+        try
+        {
+            //Check if user is logged in
+            string? email = GetLoggedInEmail();
+            if (string.IsNullOrEmpty(email))
+            {
+                return Unauthorized();
+            }
 
+            //Extract store id of the loged in user
+            int storeid;
+            if (IsStoreLoggedin())
+            {
+                Store? s = context.GetStore(email);
+                storeid = s.IdStore;
+            }
+            else
+            {
+                Worker? w = context.GetUser(email);
+                storeid = w.IdStore;
+            }
 
+            //Read stores from database
+            List<Worker> workers = context.Workers.Where(w => w.IdStore == storeid && w.StatusWorker== statusWorker).ToList();
+            List<WorkerDto> dtoWorkers = new List<WorkerDto>();
+            foreach (Worker worker in workers)
+            {
+                WorkerDto w = new WorkerDto(worker);
+                w.ProfileImagePath = GetProfileImageVirtualPath(w.WorkerId, false);
+                dtoWorkers.Add(w);
+            }
+            return Ok(dtoWorkers);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
 
-
-
-
-
-
-
-
-
-
+    }
+   
 }
 
 

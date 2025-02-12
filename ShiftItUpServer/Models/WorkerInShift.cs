@@ -15,6 +15,9 @@ public partial class WorkerInShift
 
     public int WorkerId { get; set; }
 
+    [StringLength(500)]
+    public string? SystemRemarks { get; set; }
+
     [ForeignKey("ShiftId")]
     public virtual Shift Shift { get; set; } = null!;
 

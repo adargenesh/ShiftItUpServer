@@ -13,8 +13,15 @@ public partial class Shift
     [Column("ShiftID")]
     public int ShiftId { get; set; }
 
-    public DateOnly ShiftDate { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime ShiftStart { get; set; }
 
-    [StringLength(50)]
-    public string ShiftGoal { get; set; } = null!;
+    [Column(TypeName = "datetime")]
+    public DateTime ShiftEnd { get; set; }
+
+    [Column(TypeName = "decimal(18, 0)")]
+    public decimal SalesGoal { get; set; }
+
+    [Column(TypeName = "decimal(18, 0)")]
+    public decimal? SalesActual { get; set; }
 }

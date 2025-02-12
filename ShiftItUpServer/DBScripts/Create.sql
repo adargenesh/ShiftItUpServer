@@ -47,33 +47,49 @@ Create Table Worker
 Create Table [Shift]
 (
     ShiftID int Primary Key Identity,
-    ShiftDate date Not Null,
-    ShiftGoal nvarchar(50) Not Null
+    ShiftStart datetime Not Null,
+    ShiftEnd datetime Not Null,
+    SalesGoal decimal Not Null,
+    SalesActual decimal Null
 );
 
 Create Table [WorkerInShift]
 (
     ShiftID int not null,
     WorkerId int Not Null,
+    SystemRemarks nvarchar(500) null,
     Foreign key (ShiftID) References [Shift] (ShiftID),
+    Foreign key (WorkerId) References Worker (WorkerId)
+);
+
+
+Create Table [WorkerShiftRequest]
+(
+    RequestID int identity primary key,
+    WeekNum int not null,
+    [Year] int not null,
+    WorkerId int Not Null,
+    RemarksCanWork nvarchar(500) null,
+    RemarksCanNotWork nvarchar(500) null,
     Foreign key (WorkerId) References Worker (WorkerId)
 );
 
 Create Table [DefiningShift]
 (
-    ShiftID int Primary Key Identity,
+    DefiningShiftID int Primary Key Identity,
     IdStore int not null,
     Foreign key (IdStore) References Store (IdStore),
-    ShiftDate date Not Null,
-    ShiftHour nvarchar(50) Not Null
+    [DayOfWeek] int not null, 
+    StartTime time Not Null,
+    EndTime time Not Null
 );
 
 Go
 
 -- הוספת סטטוסים לטבלה [Status]
-INSERT INTO [Status] VALUES (0, N'מאושר');
-INSERT INTO [Status] VALUES (1, N'נדחה');
-INSERT INTO [Status] VALUES (2, N'ממתין');
+INSERT INTO [Status] VALUES (0, N'Approved');
+INSERT INTO [Status] VALUES (1, N'Declined');
+INSERT INTO [Status] VALUES (2, N'Pending');
 Go
 
 -- קודם כל, הוסף את הנתונים לטבלה Store, ואז Worker
