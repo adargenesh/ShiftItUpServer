@@ -100,6 +100,15 @@ values ('Billa', 'Street 123', 'Adi', 'adi@billa.com', 'password123');
 insert into Worker (UserName, UserLastName, UserEmail, UserPassword, IdStore, UserSalary, StatusWorker)
 values ('Adar', 'Genesh', 'adar.g@gmail.com', 'adar123',  1, '5000', 0);
 
+insert into Worker (UserName, UserLastName, UserEmail, UserPassword, IdStore, UserSalary, StatusWorker)
+values ('Adar2', 'Genesh', 'adar2.g@gmail.com', 'adar2123',  1, '5000', 2);
+
+insert into Worker (UserName, UserLastName, UserEmail, UserPassword, IdStore, UserSalary, StatusWorker)
+values ('Adar3', 'Genesh', 'adar3.g@gmail.com', 'adar3123',  1, '5000', 2);
+
+insert into Worker (UserName, UserLastName, UserEmail, UserPassword, IdStore, UserSalary, StatusWorker)
+values ('Adar4', 'Genesh', 'adar4.g@gmail.com', 'adar4123',  1, '5000', 1);
+
 -- יצירת כניסה עבור המשתמש admin
 CREATE LOGIN [ShiftAdminLogin] WITH PASSWORD = 'kukuPassword';
 Go
