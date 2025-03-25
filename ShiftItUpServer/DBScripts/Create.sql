@@ -69,8 +69,8 @@ Create Table [WorkerShiftRequest]
     WeekNum int not null,
     [Year] int not null,
     WorkerId int Not Null,
-    RemarksCanWork nvarchar(500) null,
-    RemarksCanNotWork nvarchar(500) null,
+    Remarks nvarchar(500) not  null,
+ 
     Foreign key (WorkerId) References Worker (WorkerId)
 );
 
@@ -130,3 +130,4 @@ SELECT * FROM [Worker]
 GO
 select * from Store
 select *from [Status] 
+select *from WorkerShiftRequest

@@ -20,10 +20,7 @@ public partial class WorkerShiftRequest
     public int WorkerId { get; set; }
 
     [StringLength(500)]
-    public string? RemarksCanWork { get; set; }
-
-    [StringLength(500)]
-    public string? RemarksCanNotWork { get; set; }
+    public string Remarks { get; set; } = null!;
 
     [ForeignKey("WorkerId")]
     [InverseProperty("WorkerShiftRequests")]
