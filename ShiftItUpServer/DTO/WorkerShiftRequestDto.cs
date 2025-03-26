@@ -11,6 +11,7 @@ namespace ShiftItUpServer.DTO
         public int Year { get; set; }
 
         public int WorkerId { get; set; }
+        public WorkerDto? Worker { get; set; }
 
         public string Remarks { get; set; } = null!;
         public WorkerShiftRequestDto() { }
@@ -22,6 +23,10 @@ namespace ShiftItUpServer.DTO
             this.Year = modelWorker.Year;    
             this.WorkerId = modelWorker.WorkerId;    
             this.Remarks=modelWorker.Remarks;
+            if (modelWorker.Worker != null)
+            {
+                this.Worker = new WorkerDto(modelWorker.Worker);
+            }
         }
         public Models.WorkerShiftRequest GetModel()
         {

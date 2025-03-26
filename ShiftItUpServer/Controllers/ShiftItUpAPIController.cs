@@ -112,6 +112,35 @@ public class ShiftItUpAPIController : ControllerBase
 
     }
 
+    [HttpPost("AddShiftRequest")]
+    public IActionResult AddShiftRequest([FromBody] WorkerShiftRequestDto request)
+    {
+        try
+        {
+            //Check if user is logged in
+            string? email = GetLoggedInEmail();
+            if (string.IsNullOrEmpty(email))
+            {
+                return Unauthorized();
+            }
+
+            //Create model user class
+            ShiftItUpServer.Models.WorkerShiftRequest modelRequest = request.GetModel();
+
+            context.WorkerShiftRequests.Add(modelRequest);
+            context.SaveChanges();
+
+            //User was added!
+            ShiftItUpServer.DTO.WorkerShiftRequestDto dto = new WorkerShiftRequestDto(modelRequest);
+            return Ok(dto);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+    }
+
     [HttpPost("registerStore")]
     public IActionResult RegisterStore([FromBody] ShiftItUpServer.DTO.StoreDto storeDto)
     {
