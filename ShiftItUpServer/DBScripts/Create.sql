@@ -95,6 +95,9 @@ Go
 -- קודם כל, הוסף את הנתונים לטבלה Store, ואז Worker
 insert into Store (StoreName, StoreAdress, StoreManager, ManagerEmail, ManagerPassword)
 values ('Billa', 'Street 123', 'Adi', 'adi@billa.com', 'password123');
+insert into Store (StoreName, StoreAdress, StoreManager, ManagerEmail, ManagerPassword)
+values ('HgDESIGN', 'Street 16', 'HADAS', 'HADAS@HGDESIGHN.com', 'HG123');
+
 
 -- עכשיו הוסף את הנתונים לטבלת Worker, כאשר ה-IdStore שייך לערך קיים בטבלת Store (במקרה זה 1)
 insert into Worker (UserName, UserLastName, UserEmail, UserPassword, IdStore, UserSalary, StatusWorker)
@@ -108,6 +111,10 @@ values ('Adar3', 'Genesh', 'adar3.g@gmail.com', 'adar3123',  1, '5000', 2);
 
 insert into Worker (UserName, UserLastName, UserEmail, UserPassword, IdStore, UserSalary, StatusWorker)
 values ('Adar4', 'Genesh', 'adar4.g@gmail.com', 'adar4123',  1, '5000', 1);
+insert into Worker (UserName, UserLastName, UserEmail, UserPassword, IdStore, UserSalary, StatusWorker)
+values ('AMIT', 'BBB', 'AMIT.g@gmail.com', 'AMIT123',  2, '100000', 0);
+
+
 
 -- יצירת כניסה עבור המשתמש admin
 CREATE LOGIN [ShiftAdminLogin] WITH PASSWORD = 'kukuPassword';
@@ -131,3 +138,4 @@ GO
 select * from Store
 select *from [Status] 
 select *from WorkerShiftRequest
+DELETE [Worker] WHERE WorkerId=5;

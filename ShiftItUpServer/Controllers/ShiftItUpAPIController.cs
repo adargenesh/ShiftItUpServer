@@ -603,9 +603,56 @@ public class ShiftItUpAPIController : ControllerBase
         }
 
     }
-  
 
 
+    [HttpGet("getAllRequestOfStore")]
+    public IActionResult GetAllRequestOfStore()
+    {
+        try
+        {
+            //Check if user is logged in
+            string? email = GetLoggedInEmail();
+            if (string.IsNullOrEmpty(email))
+            {
+                return Unauthorized();
+            }
+
+            //Extract store id of the loged in user
+            int storeid;
+            if (IsStoreLoggedin())
+            {
+                Store? s = context.GetStore(email);
+                storeid = s.IdStore;
+            }
+            else
+            {
+                Worker? w = context.GetUser(email);
+                storeid = w.IdStore;
+            }
+
+            //Read stores from database
+            Store? store = context.Stores.Where(w => w.IdStore == storeid).
+                                                Include(s => s.Workers).
+                                                ThenInclude(w => w.WorkerShiftRequests).FirstOrDefault();
+            List<WorkerShiftRequestDto> list = new List<WorkerShiftRequestDto>();
+
+            foreach(Worker w in store.Workers)
+            {
+                foreach(WorkerShiftRequest r in w.WorkerShiftRequests)
+                {
+                    list.Add(new WorkerShiftRequestDto(r));
+                }
+            }
+            
+
+            return Ok(list);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+    }
 
 }
 
