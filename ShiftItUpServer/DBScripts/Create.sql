@@ -50,7 +50,8 @@ Create Table [Shift]
     ShiftStart datetime Not Null,
     ShiftEnd datetime Not Null,
     SalesGoal decimal Not Null,
-    SalesActual decimal Null
+    SalesActual decimal Null,
+    NumEmployees int not null
 );
 
 Create Table [WorkerInShift]
@@ -81,7 +82,8 @@ Create Table [DefiningShift]
     Foreign key (IdStore) References Store (IdStore),
     [DayOfWeek] int not null, 
     StartTime time Not Null,
-    EndTime time Not Null
+    EndTime time Not Null,
+    NumEmployees int not null
 );
 
 Go

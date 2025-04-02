@@ -24,4 +24,6 @@ public partial class Shift
 
     [Column(TypeName = "decimal(18, 0)")]
     public decimal? SalesActual { get; set; }
+
+    public int NumEmployees { get; set; }
 }

@@ -37,7 +37,7 @@ public partial class ShiftItUpDbContext : DbContext
     {
         modelBuilder.Entity<DefiningShift>(entity =>
         {
-            entity.HasKey(e => e.DefiningShiftId).HasName("PK__Defining__CC609F429747D210");
+            entity.HasKey(e => e.DefiningShiftId).HasName("PK__Defining__CC609F42A98A2A3D");
 
             entity.HasOne(d => d.IdStoreNavigation).WithMany(p => p.DefiningShifts)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -46,24 +46,24 @@ public partial class ShiftItUpDbContext : DbContext
 
         modelBuilder.Entity<Shift>(entity =>
         {
-            entity.HasKey(e => e.ShiftId).HasName("PK__Shift__C0A838E1E949D205");
+            entity.HasKey(e => e.ShiftId).HasName("PK__Shift__C0A838E1A52DACB8");
         });
 
         modelBuilder.Entity<Status>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Status__3214EC075C72630B");
+            entity.HasKey(e => e.Id).HasName("PK__Status__3214EC078FCBE56B");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<Store>(entity =>
         {
-            entity.HasKey(e => e.IdStore).HasName("PK__Store__2A8EB27861F64E62");
+            entity.HasKey(e => e.IdStore).HasName("PK__Store__2A8EB278A8C22093");
         });
 
         modelBuilder.Entity<Worker>(entity =>
         {
-            entity.HasKey(e => e.WorkerId).HasName("PK__Worker__077C8826D77EFA08");
+            entity.HasKey(e => e.WorkerId).HasName("PK__Worker__077C8826F72783D1");
 
             entity.HasOne(d => d.IdStoreNavigation).WithMany(p => p.Workers)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -87,7 +87,7 @@ public partial class ShiftItUpDbContext : DbContext
 
         modelBuilder.Entity<WorkerShiftRequest>(entity =>
         {
-            entity.HasKey(e => e.RequestId).HasName("PK__WorkerSh__33A8519ADECC7E45");
+            entity.HasKey(e => e.RequestId).HasName("PK__WorkerSh__33A8519A158629B7");
 
             entity.HasOne(d => d.Worker).WithMany(p => p.WorkerShiftRequests)
                 .OnDelete(DeleteBehavior.ClientSetNull)

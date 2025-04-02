@@ -21,6 +21,8 @@ public partial class DefiningShift
 
     public TimeOnly EndTime { get; set; }
 
+    public int NumEmployees { get; set; }
+
     [ForeignKey("IdStore")]
     [InverseProperty("DefiningShifts")]
     public virtual Store IdStoreNavigation { get; set; } = null!;

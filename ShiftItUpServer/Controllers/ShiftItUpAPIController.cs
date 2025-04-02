@@ -640,7 +640,10 @@ public class ShiftItUpAPIController : ControllerBase
             {
                 foreach(WorkerShiftRequest r in w.WorkerShiftRequests)
                 {
-                    list.Add(new WorkerShiftRequestDto(r));
+                    WorkerShiftRequestDto dto = new WorkerShiftRequestDto(r);
+                    dto.Worker.ProfileImagePath = GetProfileImageVirtualPath(dto.WorkerId, false);
+                    list.Add(dto);
+                    
                 }
             }
             
