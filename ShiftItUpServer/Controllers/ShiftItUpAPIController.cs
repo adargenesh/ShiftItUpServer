@@ -150,7 +150,28 @@ public class ShiftItUpAPIController : ControllerBase
 
             //Create model store class
             ShiftItUpServer.Models.Store modelsStore = storeDto.GetModel();
-
+            //Add default defining shifts that will be changed later if necessary
+            modelsStore.DefiningShifts = new List<DefiningShift>();
+            for(int dayOfWeek = 1; dayOfWeek < 8; dayOfWeek++)
+            {
+                modelsStore.DefiningShifts.Add(new DefiningShift()
+                {
+                    IdStore = 0,
+                    DayOfWeek = dayOfWeek,
+                    NumEmployees = 2,
+                    StartTime = new TimeOnly(9, 0),
+                    EndTime = new TimeOnly(16, 0)
+                });
+                modelsStore.DefiningShifts.Add(new DefiningShift()
+                {
+                    IdStore = 0,
+                    DayOfWeek = dayOfWeek,
+                    NumEmployees = 2,
+                    StartTime = new TimeOnly(16, 0),
+                    EndTime = new TimeOnly(22, 0)
+                });
+            }
+            
             context.Stores.Add(modelsStore);
             context.SaveChanges();
 
@@ -507,6 +528,41 @@ public class ShiftItUpAPIController : ControllerBase
         return virtualPath;
     }
 
+    [HttpPost("updateprofilestore")]
+    public async Task<IActionResult> UpdateProfileStore([FromBody] StoreDto storeDto)
+    {
+        if (storeDto == null)
+        {
+            return BadRequest("Store data is null");
+        }
+
+        // חיפוש המשתמש לפי Id
+        var store = await context.Stores.FindAsync(storeDto.IdStore);
+
+        if (store == null)
+        {
+            return NotFound($"Store with ID {storeDto.IdStore} not found");
+        }
+
+        // עדכון השדות של המשתמש
+        store.StoreManager = storeDto.StoreManager;
+        store.StoreName = storeDto.StoreName;
+        store.StoreAdress = storeDto.StoreAddress;
+        store.ManagerEmail = storeDto.ManagerEmail;
+        store.ManagerPassword = storeDto.ManagerPassword;
+
+        try
+        {
+            // שמירת השינויים למסד הנתונים
+            await context.SaveChangesAsync();
+            return Ok(new { message = "Profile updated successfully" });
+        }
+        catch (Exception ex)
+        {
+            // טיפול בשגיאות
+            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred", error = ex.Message });
+        }
+    }
 
 
     [HttpPost("updateprofile")]

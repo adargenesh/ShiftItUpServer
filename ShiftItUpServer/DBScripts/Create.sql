@@ -138,6 +138,7 @@ scaffold-DbContext "Server = (localdb)\MSSQLLocalDB;Initial Catalog=ShiftItUpDB;
 SELECT * FROM [Worker]
 GO
 select * from Store
+select * from DefiningShift
 select *from [Status] 
 select *from WorkerShiftRequest
 DELETE [Worker] WHERE WorkerId=5;
