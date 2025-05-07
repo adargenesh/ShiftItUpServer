@@ -713,6 +713,93 @@ public class ShiftItUpAPIController : ControllerBase
 
     }
 
+    [HttpGet("GetDefiningShifts")]
+    public IActionResult GetDefiningShifts()
+    {
+        string? email = GetLoggedInEmail();
+        if (email == null)
+        {
+            return Unauthorized();
+        }
+
+        Store? store = context.GetStore(email);
+        if (store == null)
+        {
+            return NotFound("Store not found");
+        }
+
+        List<DefiningShiftDto> definingShiftDtos = new List<DefiningShiftDto>();
+
+        foreach(DefiningShift definingShift in store.DefiningShifts)
+        {
+            DefiningShiftDto definingShiftDto = new DefiningShiftDto(definingShift);
+            definingShiftDtos.Add(definingShiftDto);
+        }
+
+        return Ok(definingShiftDtos);
+
+    }
+
+    [HttpPost("UpdateDefiningShifts")]
+    public IActionResult UpdateDefiningShifts(List<DefiningShiftDto> shifts)
+    {
+        try
+        {
+            //Check if user is logged in
+            string? email = GetLoggedInEmail();
+            if (email == null)
+            {
+                return Unauthorized();
+            }
+
+            //Check if user is logged a store
+            Store? store = context.GetStore(email);
+            if (store == null)
+            {
+                return NotFound("Store not found");
+            }
+
+            //Check if the shifts belong to the store
+            foreach (DefiningShiftDto definingShiftDto in shifts)
+            {
+                if (definingShiftDto.IdStore != store.IdStore)
+                {
+                    return BadRequest("Defining shift does not belong to the store");
+                }
+            }
+
+            //check if there are shifts that need to be removed from the database
+            List<DefiningShift> definingShifts = store.DefiningShifts.ToList();
+            foreach (DefiningShift definingShift in definingShifts)
+            {
+                if (!shifts.Any(s => s.DefiningShiftId == definingShift.DefiningShiftId))
+                {
+                    context.DefiningShifts.Remove(definingShift);
+                }
+            }
+            context.SaveChanges();
+
+            //Update all shifts in the database
+            context.ChangeTracker.Clear(); //Clear the tracking of all objects to avoid double tracking
+            definingShifts = new List<DefiningShift>();
+
+            foreach (DefiningShiftDto definingShift in shifts)
+            {
+                DefiningShift modelShift = definingShift.GetModel();
+                definingShifts.Add(modelShift);
+            }
+
+            context.DefiningShifts.UpdateRange(definingShifts);
+            context.SaveChanges();
+            return Ok();
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+    }
+
 }
 
 

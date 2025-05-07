@@ -15,7 +15,7 @@ public partial class ShiftItUpDbContext : DbContext
 
     public Store? GetStore(string email)
     {
-        return this.Stores.Where(u => u.ManagerEmail == email)
+        return this.Stores.Include(s=> s.DefiningShifts).Where(u => u.ManagerEmail == email)
                             .FirstOrDefault();
     }
 
