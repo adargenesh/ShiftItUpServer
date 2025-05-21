@@ -800,6 +800,72 @@ public class ShiftItUpAPIController : ControllerBase
 
     }
 
+    [HttpPost("AddShiftSchedule")]
+    public IActionResult AddShiftSchedule(List<ShiftDto> shifts)
+    {
+        try
+        {
+            //Check if user is logged in
+            string? email = GetLoggedInEmail();
+            if (email == null)
+            {
+                return Unauthorized();
+            }
+
+            //Check if user is logged a store
+            Store? store = context.GetStore(email);
+            if (store == null)
+            {
+                return NotFound("Store not found");
+            }
+
+            
+            //Save shifts in database
+            List<Shift> dbShifts = new List<Shift>();
+            foreach (ShiftDto s in shifts)
+            {
+                Shift shift = s.GetModels();
+                context.Shifts.Update(shift);
+            }
+            context.SaveChanges();
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+    }
+
+    [HttpGet("ReadShiftSchedule")]
+    public IActionResult ReadShiftSchedule([FromQuery] DateTime start)
+    {
+        try
+        {
+            //Check if user is logged in
+            string? email = GetLoggedInEmail();
+            if (email == null)
+            {
+                return Unauthorized();
+            }
+
+            //Save shifts in database
+            List<Shift> dbShifts = context.Shifts.Where(s => s.ShiftStart >= start && s.ShiftStart < start.AddDays(7)).ToList();
+            List<ShiftDto> shifts = new List<ShiftDto>();
+            foreach (Shift s in dbShifts)
+            {
+                ShiftDto shift = new ShiftDto(s);
+                shifts.Add(shift);
+            }
+            return Ok(shifts);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+    }
+
 }
 
 

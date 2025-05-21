@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ShiftItUpServer.Models;
 
 [Table("Store")]
-[Index("ManagerEmail", Name = "UQ__Store__351A32D74360A890", IsUnique = true)]
+[Index("ManagerEmail", Name = "UQ__Store__351A32D7FD5E57A7", IsUnique = true)]
 public partial class Store
 {
     [Key]

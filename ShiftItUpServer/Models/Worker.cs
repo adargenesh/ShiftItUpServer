@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ShiftItUpServer.Models;
 
 [Table("Worker")]
-[Index("UserEmail", Name = "UQ__Worker__08638DF8DC45459D", IsUnique = true)]
+[Index("UserEmail", Name = "UQ__Worker__08638DF8F003D5F6", IsUnique = true)]
 public partial class Worker
 {
     [Key]
@@ -39,6 +39,9 @@ public partial class Worker
     [ForeignKey("StatusWorker")]
     [InverseProperty("Workers")]
     public virtual Status StatusWorkerNavigation { get; set; } = null!;
+
+    [InverseProperty("Worker")]
+    public virtual ICollection<WorkerInShift> WorkerInShifts { get; set; } = new List<WorkerInShift>();
 
     [InverseProperty("Worker")]
     public virtual ICollection<WorkerShiftRequest> WorkerShiftRequests { get; set; } = new List<WorkerShiftRequest>();

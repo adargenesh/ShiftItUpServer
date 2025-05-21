@@ -26,4 +26,7 @@ public partial class Shift
     public decimal? SalesActual { get; set; }
 
     public int NumEmployees { get; set; }
+
+    [InverseProperty("Shift")]
+    public virtual ICollection<WorkerInShift> WorkerInShifts { get; set; } = new List<WorkerInShift>();
 }

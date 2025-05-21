@@ -6,10 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ShiftItUpServer.Models;
 
-[Keyless]
 [Table("WorkerInShift")]
 public partial class WorkerInShift
 {
+    [Key]
+    [Column("id")]
+    public int Id { get; set; }
+
     [Column("ShiftID")]
     public int ShiftId { get; set; }
 
@@ -19,8 +22,10 @@ public partial class WorkerInShift
     public string? SystemRemarks { get; set; }
 
     [ForeignKey("ShiftId")]
+    [InverseProperty("WorkerInShifts")]
     public virtual Shift Shift { get; set; } = null!;
 
     [ForeignKey("WorkerId")]
+    [InverseProperty("WorkerInShifts")]
     public virtual Worker Worker { get; set; } = null!;
 }

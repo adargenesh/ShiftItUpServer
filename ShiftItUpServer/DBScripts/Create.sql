@@ -56,6 +56,7 @@ Create Table [Shift]
 
 Create Table [WorkerInShift]
 (
+    id int Primary Key Identity,
     ShiftID int not null,
     WorkerId int Not Null,
     SystemRemarks nvarchar(500) null,
