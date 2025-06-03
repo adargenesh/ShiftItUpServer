@@ -143,3 +143,8 @@ select * from DefiningShift
 select *from [Status] 
 select *from WorkerShiftRequest
 DELETE [Worker] WHERE WorkerId=5;
+
+update Worker set statusworker = 0
+
+select * from Shift
+select * from WorkerInShift

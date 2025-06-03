@@ -40,6 +40,14 @@ namespace ShiftItUpServer.DTO
 
         public Models.Shift GetModels()
         {
+            List<WorkerInShift> workers = new List<WorkerInShift>();
+            if (this.WorkerInShifts != null)
+            {
+                foreach(WorkerInShiftDto w in this.WorkerInShifts)
+                {
+                    workers.Add(w.GetModels());
+                }
+            }
             return new Models.Shift
             {
                 ShiftId = this.ShiftId,
@@ -47,7 +55,9 @@ namespace ShiftItUpServer.DTO
                 ShiftEnd = this.ShiftEnd,
                 SalesGoal = this.SalesGoal,
                 SalesActual = this.SalesActual,
-                NumEmployees = this.NumEmployees
+                NumEmployees = this.NumEmployees,
+                WorkerInShifts = workers
+                
             };
         }
     }
