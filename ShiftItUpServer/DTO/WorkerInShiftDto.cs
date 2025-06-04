@@ -13,6 +13,8 @@ namespace ShiftItUpServer.DTO
 
         public string? SystemRemarks { get; set; }
 
+        public WorkerDto? Worker { get; set; }
+
         public WorkerInShiftDto() { }
         public WorkerInShiftDto(Models.WorkerInShift workerInShift)
         {
@@ -20,6 +22,10 @@ namespace ShiftItUpServer.DTO
             ShiftId = workerInShift.ShiftId;
             WorkerId = workerInShift.WorkerId;
             SystemRemarks = workerInShift.SystemRemarks;
+            if (workerInShift.Worker != null)
+            {
+                this.Worker = new WorkerDto(workerInShift.Worker);
+            }
         }
         public Models.WorkerInShift GetModels()
         {
